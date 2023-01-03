@@ -20,6 +20,9 @@ __Starting the ModelsGenerator.py file from the terminal it will appear:__
 
 #  ___OPTION 1:___
 ### Model generation:
+***I decided to use tfidf and support vector machine because they are highly suitable for text processing and***
+***support vector machine with the linear kernel is highly suitable for classifications based on two classes as***
+***in our case: positive and negative***
 
 ![Screenshot](myScripts/OUTPUTS/generator.png)
 
