@@ -18,11 +18,13 @@ __3)-PLOT CON VETTORIZZATORE TFIDF E RIDUZIONE TRUNCATED SVD__
 
 # Esempio dataset Kaggle IMDb:
 
+![Screenshot](myScripts/OUTPUTS/prova.png)
+
 ***Ho creato un client in Angular per mandare richieste ad un server python che verra discusso al link:*** 
 
 # CLIENT: 
 
-![Screenshot](myScripts/OUTPUTS/prova.png)
+![Screenshot](myScripts/OUTPUTS/client.png)
 
 # RISPOSTA DAL SERVER:
 
