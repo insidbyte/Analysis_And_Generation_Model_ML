@@ -4,6 +4,8 @@ __BEFORE READING THIS REPOSITORY IT IS RECOMMENDED TO START FROM:__
 
 https://github.com/insidbyte/Analysis_and_processing
 
+***I have in fact decided to generate a custom vocabulary to train the model and it would be appropriate to look at the repository code.***
+
 ___OPZIONI:___
  
     1)-GENERATE MODEL
