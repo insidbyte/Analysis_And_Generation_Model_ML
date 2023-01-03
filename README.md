@@ -72,3 +72,4 @@ __Starting the ModelsGenerator.py file from the terminal it will appear:__
 # CONCLUSION:
 ***We got satisfactory results and generated a fairly accurate***
 ***model this repository will be updated over time***
+***For info or collaborations contact me at: u.calice@studenti.poliba.it***
