@@ -20,7 +20,7 @@ __3)-PLOT CON VETTORIZZATORE TFIDF E RIDUZIONE TRUNCATED SVD__
 
 ![Screenshot](myScripts/OUTPUTS/prova.png)
 
-### ***Ho creato un client in Angular per mandare richieste ad un server python*** 
+### ***Ho creato un Client in Angular per mandare richieste ad un Server Python*** 
 
 # CLIENT: 
 
