@@ -59,3 +59,12 @@ __Starting the ModelsGenerator.py file from the terminal it will appear:__
 ### ***so it is always advisable to know what we are doing***
 
 ### Link scikit-learn: https://scikit-learn.org/
+
+
+#  ___OPTION 3:___
+
+***This option is experimental, the reduction is not applied to model training because it***
+***generates too few components and RAM memory (8GB) of my PC is not enough to generate***
+***more components even if the results are interesting!***
+
+![Screenshot](myScripts/OUTPUTS/tsvd_result.png)
