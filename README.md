@@ -67,4 +67,4 @@ __Starting the ModelsGenerator.py file from the terminal it will appear:__
 ***generates too few components and RAM memory (8GB) of my PC is not enough to generate***
 ***more components even if the results are interesting!***
 
-![Screenshot](myScripts/OUTPUTS/tsvd_result.png)
+![Screenshot](myScripts/OUTPUTS/TSVD_result.png)
