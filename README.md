@@ -8,3 +8,12 @@ __2)-TESTA CON IL TUNING DEGLI IPERPARAMETRI__
 
 __3)-PLOT CON VETTORIZZATORE TFIDF E RIDUZIONE TRUNCATED SVD__
 
+***Menù***
+
+![Screenshot](MyScripts/OUTPUTS/menu_generator.png)
+
+
+***Generazione Modello:***
+
+
+![Screenshot](MyScripts/OUTPUTS/menu_generator.png)
