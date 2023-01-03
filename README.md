@@ -55,5 +55,5 @@ __Starting the ModelsGenerator.py file from the terminal it will appear:__
 ***The code in ModelsGenerator.py must be customized based on the dataset to be analyzed***
 
 ### ***WARNING !!***
-### ***beware if we don't study the scikit-learn documentation we could start infinite analyzes***
+### ***If we don't study the scikit-learn documentation we could start infinite analyzes***
 ### ***so it is always advisable to know what we are doing***
