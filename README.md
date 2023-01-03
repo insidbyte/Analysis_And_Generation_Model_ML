@@ -54,8 +54,6 @@ __Starting the ModelsGenerator.py file from the terminal it will appear:__
 ***generate the most accurate model possible is to use GrisearchCV made available by scikit-learn***
 ***The code in ModelsGenerator.py must be customized based on the dataset to be analyzed***
 
-### ***WARNING !! ***
-
+### ***WARNING !!***
 ### ***beware if we don't study the scikit-learn documentation we could start infinite analyzes***
-
-### ***so it is always advisable to know what we are doing ***
+### ***so it is always advisable to know what we are doing***
