@@ -26,6 +26,10 @@ __3)-PLOT CON VETTORIZZATORE TFIDF E RIDUZIONE TRUNCATED SVD__
 
 ![Screenshot](myScripts/OUTPUTS/client.png)
 
+# SERVER:
+
+![Screenshot](myScripts/OUTPUTS/server.png)
+
 # RISPOSTA DAL SERVER:
 
 ![Screenshot](myScripts/OUTPUTS/response.png)
