@@ -10,10 +10,10 @@ __3)-PLOT CON VETTORIZZATORE TFIDF E RIDUZIONE TRUNCATED SVD__
 
 ***Menù***
 
-![Screenshot](myScripts/OUTPUTS/menu.png)
+![Screenshot](MyScripts/OUTPUTS/menu.png)
 
 
 ***Generazione Modello:***
 
 
-![Screenshot](myScripts/OUTPUTS/generator.png)
+![Screenshot](MyScripts/OUTPUTS/generator.png)
