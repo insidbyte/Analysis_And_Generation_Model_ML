@@ -10,10 +10,12 @@ __3)-PLOT CON VETTORIZZATORE TFIDF E RIDUZIONE TRUNCATED SVD__
 
 ### Menù
 
+__avviando il file ModelsGenerator.py da terminale apparirà:__
+
 ![Screenshot](myScripts/OUTPUTS/menu.png)
 
 #  ___OPZIONE 1:___
-### Generazione Modello
+### Generazione Modello:
 
 ![Screenshot](myScripts/OUTPUTS/generator.png)
 
