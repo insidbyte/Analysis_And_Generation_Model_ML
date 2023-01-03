@@ -1,6 +1,10 @@
 # Analysis_And_Generation_Model_ML
- 
- ___OPZIONI:___
+
+__PRIMA DI LEGGERE QUESTO REPOSITORY SI CONSIGLIA DI INIZIARE DA:__
+
+https://github.com/insidbyte/Analysis_and_processing
+
+___OPZIONI:___
  
 __1)-GENERA MODELLO__
 
