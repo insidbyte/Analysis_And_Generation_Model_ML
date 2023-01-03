@@ -1,9 +1,9 @@
 import sys
 from AnalysesTSVD import Analyses
-from joblib import dump
+from joblib import dump, load
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.decomposition import TruncatedSVD
+from sklearn.decomposition import TruncatedSVD, IncrementalPCA
 from sklearn.model_selection import train_test_split, GridSearchCV
 import numpy as np
 from sklearn import svm
@@ -15,10 +15,11 @@ from imblearn.under_sampling import RandomUnderSampler
 
 class ModelsGenerator:
 
-    def __init__(self):
+    def __init__(self, option):
         np.random.seed(24)
+        self.vocabulary = load("../vocabulary.joblib")
         self.rus = RandomUnderSampler(random_state=24)
-        self.df = pd.read_csv("../Dataset_processed/new.csv")
+        self.df = pd.read_csv("../Dataset_processed/proc_correct_lemma_nostop_100.csv")
         self.df = self.df.sample(frac=1)
         self.df = self.df.astype('U')
         count_p = self.df[self.df['sentiment'] == 'positive']
@@ -32,19 +33,29 @@ class ModelsGenerator:
             print(f'Dataset bilanciato : \nPositive: {len(count_p)}\nNegative: {len(count_n)} !')
         else:
             print('Dataset bilanciato !')
-        self.array_df = self.df_to_array()
-        self.vectorizer = TfidfVectorizer(stop_words='english', ngram_range=(2, 3), max_df=0.75, max_features=100000)
-        # best_score: 0.9162482792128916
-        # best_params: {'clf__C': 8192, 'clf__gamma': 'auto', 'rd__algorithm': 'randomized', 'rd__n_components': 100, 'rd__n_iter': 15, 'rd__n_oversamples': 10, 'rd__power_iteration_normalizer': 'none', 'rd__random_state': 24, 'vect__dtype': <class 'numpy.float32'>, 'vect__max_df': 0.75, 'vect__ngram_range': (2, 3)}
+        if option == 1:
+            self.array_df = self.df_to_array()
+            self.vectorizer = TfidfVectorizer(stop_words='english', ngram_range=(1, 3),
+                                              vocabulary=self.vocabulary, use_idf=True, smooth_idf=True,
+                                              sublinear_tf=True)  # max_df=0.75, max_features=3000,
+            # sublinear_tf=True, use_idf=True)
+            # best_score: 0.9162482792128916
+            # best_params: {'clf__C': 8192, 'clf__gamma': 'auto', 'rd__algorithm': 'randomized', 'rd__n_components': 100, 'rd__n_iter': 15, 'rd__n_oversamples': 10, 'rd__power_iteration_normalizer': 'none', 'rd__random_state': 24, 'vect__dtype': <class 'numpy.float32'>, 'vect__max_df': 0.75, 'vect__ngram_range': (2, 3)}
 
-        self.decompositor = TruncatedSVD(n_components=100, algorithm="randomized", n_iter=15, n_oversamples=10,
-                                         power_iteration_normalizer='none', random_state=24)
-        self.data_trans = self.tfidf()
-        self.tsvd_result = self.reduce()
-        self.y = self.df['sentiment']
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.tsvd_result, self.y, test_size=0.2,
-                                                                                random_state=24)
-        self.model = svm.SVC(C=8192, gamma='auto', kernel='linear', probability=True)
+            # self.decompositor = IncrementalPCA(n_components=20, whiten=True, batch_size=20)
+            # self.decompositor = TruncatedSVD(n_components=1000, algorithm="randomized", n_iter=15, n_oversamples=10,
+            # random_state=24)
+            self.data_trans = self.tfidf()
+            # self.tsvd_result = self.reduce()
+            self.y = self.df['sentiment']
+            self.x = self.df['review']
+            self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.data_trans, self.y,
+                                                                                    test_size=0.2,
+                                                                                    random_state=24)
+            self.model = svm.SVC(C=1, gamma='auto', kernel='linear', probability=True)
+        elif option == 2:
+            self.array_df = self.df_to_array()
+            self.y = self.df['sentiment']
 
     def df_to_array(self):
         array = []
@@ -137,8 +148,8 @@ class ModelsGenerator:
         c = 0
         print(f'[{c}]-Settaggio pipeline in corso...')
         pipeline = Pipeline([
-            ('vect', TfidfVectorizer(stop_words='english')),
-            ('rd', TruncatedSVD()),
+            ('vect', TfidfVectorizer(stop_words='english', vocabulary=self.vocabulary)),
+            # ('rd', IncrementalPCA()),
             ('clf', svm.SVC(kernel='linear'))
         ])
         c = c + 1
@@ -147,17 +158,24 @@ class ModelsGenerator:
         print(f'[{c}]-Settaggio parametri per GridSearchCV in corso...')
         # [CV 1/2] END clf__C=1, clf__gamma=auto, rd__algorithm=randomized, rd__n_components=2, rd__random_state=24, vect__dtype=<class 'numpy.float32'>, vect__max_df=0.75, vect__max_features=4273815, vect__ngram_range=(2, 3);, score=0.650 total time=  40.9s
         parameters = {
-            'vect__max_df': [0.75],
-            'vect__ngram_range': [(2, 3)],
+            # 'vect__max_df': [0.75],
+            # 'vect__min_df': [0.01, 0.001],
+            # 'vect__max_features': [4000, 5000],
+            # 'vect__ngram_range': [(1, 3)],
+
             'vect__dtype': [np.float32],
-            'rd__n_components': [2, 4, 10, 100],
-            'rd__algorithm': ['randomized'],
-            'rd__random_state': [24],
-            'rd__power_iteration_normalizer': ['auto', 'LU', 'none'],
-            'rd__n_oversamples': [10, 20, 30],
-            'rd__n_iter': [5, 10, 15],
+            'vect__sublinear_tf': [True, False],
+            'vect__use_idf': [True, False],
+            # 'rd__n_components': [10, 20],
+            # 'rd__whiten': [True],
+            # 'rd__batch_size': [20, 30],
+            # 'rd__algorithm': ['randomized'],
+            # 'rd__random_state': [24],
+            # 'rd__power_iteration_normalizer': ['auto', 'LU', 'none'],
+            # 'rd__n_oversamples': [10],
+            # 'rd__n_iter': [15],
             'clf__gamma': ['auto'],
-            'clf__C': [8192]
+            'clf__C': [1, 5, 10]
         }
         c = c + 1
         print(f'[{c}]-Settaggio parametri per GridSearchCV completato')
@@ -171,6 +189,7 @@ class ModelsGenerator:
 
 
 if __name__ == '__main__':
+
     print('Selezionare un opzione:\n1)-Generare modello\n2)-Fare tuning iperparamentri con GridSearchCV\n'
           '3)-Vedere il plot con tfidf e Truncated SVD')
     option = input()
@@ -178,17 +197,18 @@ if __name__ == '__main__':
         sys.exit("Inserire un opzione corretta SYSTEM EXIT !")
     else:
         if option == '1' or option == '2':
-            gen = ModelsGenerator()
+            option = int(option)
+            gen = ModelsGenerator(option=option)
         if option == '3':
-            df = pd.read_csv("../Dataset_processed/new.csv")
+            df = pd.read_csv("../Dataset_processed/proc_lemma_nostop_100_union.csv")
             analyses = Analyses(df.astype('U'))
             sys.exit(100)
-    if option == '1':
+    if option == 1:
         time_i = time.time()
         gen.generate()
         time_f = time.time()
         print(f'Tempo di esecuzione: {time_f - time_i} sec')
-    if option == '2':
+    if option == 2:
         time_i = time.time()
         score, par = gen.tuning()
         print(f'best_score: {score}\nbest_params: {par}')
