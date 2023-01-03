@@ -4,6 +4,8 @@ __BEFORE READING THIS REPOSITORY IT IS RECOMMENDED TO START FROM:__
 
 https://github.com/insidbyte/Analysis_and_processing
 
+***I have in fact decided to generate a custom vocabulary to train the model and it would be appropriate to look at the repository code.***
+
 ___OPZIONI:___
  
     1)-GENERATE MODEL
@@ -62,6 +64,16 @@ __Starting the ModelsGenerator.py file from the terminal it will appear:__
 ### ***so it is always advisable to know what we are doing***
 
 ### Link scikit-learn: https://scikit-learn.org/
+
+***Input:***
+
+![Screenshot](myScripts/OUTPUTS/grid.png)
+
+
+***Output:***
+
+![Screenshot](myScripts/OUTPUTS/grid2.png)
+
 
 
 #  ___OPTION 3:___
