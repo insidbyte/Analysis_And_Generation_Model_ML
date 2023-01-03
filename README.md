@@ -1,33 +1,33 @@
 # Analysis_And_Generation_Model_ML
 
-__PRIMA DI LEGGERE QUESTO REPOSITORY SI CONSIGLIA DI INIZIARE DA:__
+__BEFORE READING THIS REPOSITORY IT IS RECOMMENDED TO START FROM:__
 
 https://github.com/insidbyte/Analysis_and_processing
 
 ___OPZIONI:___
  
-    1)-GENERA MODELLO
+    1)-GENERATE MODEL
 
-    2)-TESTA CON IL TUNING DEGLI IPERPARAMETRI
+    2)-TEST WITH HYPERPARAMETER TUNING
 
-    3)-PLOT CON VETTORIZZATORE TFIDF E RIDUZIONE TRUNCATED SVD
+    3)-PLOT WITH TFIDF VECTORIZER AND SVD TRUNCATED REDUCTION
 
 ### Menù
 
-__avviando il file ModelsGenerator.py da terminale apparirà:__
+__Starting the ModelsGenerator.py file from the terminal it will appear:__
 
 ![Screenshot](myScripts/OUTPUTS/menu.png)
 
-#  ___OPZIONE 1:___
+#  ___OPTION 1:___
 ### Generazione Modello:
 
 ![Screenshot](myScripts/OUTPUTS/generator.png)
 
-# Esempio dataset Kaggle IMDb:
+# Kaggle IMDb dataset example:
 
 ![Screenshot](myScripts/OUTPUTS/prova.png)
 
-### ***Ho creato un Client in Angular per mandare richieste ad un Server Python*** 
+### ***I created a Client in Angular to send requests to a Python Server*** 
 
 # CLIENT: 
 
@@ -37,11 +37,11 @@ __avviando il file ModelsGenerator.py da terminale apparirà:__
 
 ![Screenshot](myScripts/OUTPUTS/server.png)
 
-# RISPOSTA DAL SERVER:
+# RESPONSE FROM THE SERVER:
 
 ![Screenshot](myScripts/OUTPUTS/response.png)
 
-# ALTRO ESEMPIO:
+# ANOTHER EXAMPLE:
 
 ![Screenshot](myScripts/OUTPUTS/prova2.png)
 
