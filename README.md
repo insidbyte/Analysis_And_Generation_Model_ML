@@ -68,3 +68,7 @@ __Starting the ModelsGenerator.py file from the terminal it will appear:__
 ***more components even if the results are interesting!***
 
 ![Screenshot](myScripts/OUTPUTS/TSVD_result.png)
+
+# CONCLUSION:
+***We got satisfactory results and generated a fairly accurate***
+***model this repository will be updated over time***
