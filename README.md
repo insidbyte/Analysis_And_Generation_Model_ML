@@ -63,6 +63,16 @@ __Starting the ModelsGenerator.py file from the terminal it will appear:__
 
 ### Link scikit-learn: https://scikit-learn.org/
 
+***Input:***
+
+![Screenshot](myScripts/OUTPUTS/grid.png)
+
+
+***Output:***
+
+![Screenshot](myScripts/OUTPUTS/grid2.png)
+
+
 
 #  ___OPTION 3:___
 
