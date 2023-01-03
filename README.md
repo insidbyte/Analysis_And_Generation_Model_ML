@@ -36,6 +36,6 @@ __3)-PLOT CON VETTORIZZATORE TFIDF E RIDUZIONE TRUNCATED SVD__
 
 # ALTRO ESEMPIO:
 
-![Screenshot](myScripts/OUTPUTS/prova.png)
+![Screenshot](myScripts/OUTPUTS/prova2.png)
 
 ![Screenshot](myScripts/OUTPUTS/response2.png)
