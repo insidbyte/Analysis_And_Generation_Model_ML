@@ -5,7 +5,7 @@ from nltk.corpus import stopwords
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.decomposition import TruncatedSVD,IncrementalPCA
+from sklearn.decomposition import TruncatedSVD, IncrementalPCA
 
 
 stop_words = stopwords.words('english')
@@ -46,8 +46,8 @@ class Analyses:
         print("tsvd transform...")
         X = tsvd.transform(test_data)
         print("tsvd finish")
-        with np.printoptions(threshold=np.inf):
-            print(X)
+        #with np.printoptions(threshold=np.inf):
+            #print(X)
         plt.figure(figsize=(10, 8))
         colors = ['orange', 'red']
 
