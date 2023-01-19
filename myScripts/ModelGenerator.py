@@ -1,18 +1,13 @@
 import os
-import sys
-from AnalysesTSVD import Analyses
 from joblib import dump, load
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer,CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.calibration import CalibratedClassifierCV
-from sklearn.decomposition import TruncatedSVD, IncrementalPCA
 from sklearn.model_selection import train_test_split, GridSearchCV
 import numpy as np
 from sklearn import svm
-from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, precision_score, recall_score
 from sklearn.pipeline import Pipeline
-import time
 from imblearn.under_sampling import RandomUnderSampler
 import re
 
@@ -52,15 +47,11 @@ class ModelsGenerator:
             self.vectorizer = TfidfVectorizer(stop_words='english', ngram_range=(1, 5), min_df=290,
                                               vocabulary=self.vocabulary, use_idf=True, smooth_idf=True,
                                               sublinear_tf=True)
-            #self.vectorizer = CountVectorizer(stop_words='english', ngram_range=(1, 5), min_df=290,
-                                             #vocabulary=self.vocabulary)
-            # sublinear_tf=True, use_idf=True)
-            # best_score: 0.9162482792128916
-            # best_params: {'clf__C': 8192, 'clf__gamma': 'auto', 'rd__algorithm': 'randomized', 'rd__n_components': 100, 'rd__n_iter': 15, 'rd__n_oversamples': 10, 'rd__power_iteration_normalizer': 'none', 'rd__random_state': 24, 'vect__dtype': <class 'numpy.float32'>, 'vect__max_df': 0.75, 'vect__ngram_range': (2, 3)}
+
 
             # self.decompositor = IncrementalPCA(n_components=20, whiten=True, batch_size=20)
             # self.decompositor = TruncatedSVD(n_components=1000, algorithm="randomized", n_iter=15, n_oversamples=10,
-            # random_state=24)
+                                            # random_state=24)
             self.data_trans = self.tfidf()
             # self.tsvd_result = self.reduce()
             self.y = self.df['sentiment']
@@ -68,27 +59,11 @@ class ModelsGenerator:
             self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.data_trans, self.y,
                                                                                     test_size=0.2,
                                                                                     random_state=24)
-            """
-            best_params: {'clf__C': 0.2, 'clf__cache_size': 5, 'clf__gamma': 'auto', 'clf__max_iter': -1,
-                          'clf__tol': 0.06099999999999999, 'vect__dtype': <
 
-            class 'numpy.float32'>, 'vect__ngram_range': (1, 3), 'vect__smooth_idf': True
-
-            , 'vect__sublinear_tf': True, 'vect__use_idf': True}
-            """
-            """
-            self.model = svm.SVC(C=0.22, gamma='auto', kernel='linear', probability=True, tol=0.06099999999999999,
-                                 cache_size=5, max_iter=-1)
-            """
-            #c = 0.08 , intercept_scaling=44 , tol=0.009000000000000001 , max_iter=100000
-            #tol = 0.1
             self.model = svm.LinearSVC(C=0.2, class_weight='balanced', dual=True, fit_intercept=True,
                                        intercept_scaling=0.1, loss='squared_hinge', max_iter=75000, penalty='l2',
                                        tol=0.001)
             self.model = CalibratedClassifierCV(self.model)
-            #self.model = LogisticRegression(#C=0.8, class_weight='balanced', dual=True, fit_intercept=False,
-                                            #intercept_scaling=1.0, max_iter=800, penalty='l2', tol=1.0, warm_start=True,
-                                            #solver='liblinear')
 
         elif option == 2:
             self.array_df = self.df_to_array()
@@ -224,12 +199,12 @@ class ModelsGenerator:
             'clf__max_iter': [7500],
             'clf__penalty': ['l2'],
             'clf__loss': ['squared_hinge'],
-            'clf__dual': [True, False],
-            'clf__fit_intercept': [False, True],
-            'clf__intercept_scaling': [1.0, 0.1],
+            'clf__dual': [True, ],
+            'clf__fit_intercept': [ True],
+            'clf__intercept_scaling': [ 0.1],
             'clf__class_weight': ['balanced'],
-            'clf__tol':  [0.001, 1.0],
-            'clf__C': [0.2, 0.02],
+            'clf__tol':  [0.001],
+            'clf__C': [0.2],
             'vect__min_df': [290],
             'vect__use_idf': [True],
             'vect__smooth_idf': [True],
