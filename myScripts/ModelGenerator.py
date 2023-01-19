@@ -3,12 +3,13 @@ import sys
 from AnalysesTSVD import Analyses
 from joblib import dump, load
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer,CountVectorizer
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.decomposition import TruncatedSVD, IncrementalPCA
 from sklearn.model_selection import train_test_split, GridSearchCV
 import numpy as np
 from sklearn import svm
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, precision_score, recall_score
 from sklearn.pipeline import Pipeline
 import time
@@ -22,7 +23,7 @@ class ModelsGenerator:
         li = os.listdir("../")
         ll = []
         for l in li:
-            l = re.findall('(\S+\.joblib)$',l)
+            l = re.findall('(\S+\S+\.joblib)$',l)
             if str(l) != '[]':
                 ll.append(l)
         for l in ll:
@@ -48,9 +49,11 @@ class ModelsGenerator:
             print('Dataset bilanciato !')
         if option == 1:
             self.array_df = self.df_to_array()
-            self.vectorizer = TfidfVectorizer(stop_words='english', ngram_range=(1, 3), min_df=290,
+            self.vectorizer = TfidfVectorizer(stop_words='english', ngram_range=(1, 5), min_df=290,
                                               vocabulary=self.vocabulary, use_idf=True, smooth_idf=True,
                                               sublinear_tf=True)
+            #self.vectorizer = CountVectorizer(stop_words='english', ngram_range=(1, 5), min_df=290,
+                                             #vocabulary=self.vocabulary)
             # sublinear_tf=True, use_idf=True)
             # best_score: 0.9162482792128916
             # best_params: {'clf__C': 8192, 'clf__gamma': 'auto', 'rd__algorithm': 'randomized', 'rd__n_components': 100, 'rd__n_iter': 15, 'rd__n_oversamples': 10, 'rd__power_iteration_normalizer': 'none', 'rd__random_state': 24, 'vect__dtype': <class 'numpy.float32'>, 'vect__max_df': 0.75, 'vect__ngram_range': (2, 3)}
@@ -77,10 +80,15 @@ class ModelsGenerator:
             self.model = svm.SVC(C=0.22, gamma='auto', kernel='linear', probability=True, tol=0.06099999999999999,
                                  cache_size=5, max_iter=-1)
             """
-            self.model = svm.LinearSVC(C=0.08, class_weight='balanced', dual=True, fit_intercept=True,
-                                       intercept_scaling=44, loss='squared_hinge', max_iter=100000, penalty='l2',
-                                       tol=0.009000000000000001)
+            #c = 0.08 , intercept_scaling=44 , tol=0.009000000000000001 , max_iter=100000
+            #tol = 0.1
+            self.model = svm.LinearSVC(C=0.2, class_weight='balanced', dual=True, fit_intercept=True,
+                                       intercept_scaling=0.1, loss='squared_hinge', max_iter=75000, penalty='l2',
+                                       tol=0.001)
             self.model = CalibratedClassifierCV(self.model)
+            #self.model = LogisticRegression(#C=0.8, class_weight='balanced', dual=True, fit_intercept=False,
+                                            #intercept_scaling=1.0, max_iter=800, penalty='l2', tol=1.0, warm_start=True,
+                                            #solver='liblinear')
 
         elif option == 2:
             self.array_df = self.df_to_array()
@@ -195,7 +203,7 @@ class ModelsGenerator:
         c = 0
         print(f'[{c}]-Settaggio pipeline in corso...')
         pipeline = Pipeline([
-            ('vect', TfidfVectorizer(stop_words='english', vocabulary=self.vocabulary)),
+            ('vect', TfidfVectorizer(stop_words='english', vocabulary=self.vocabulary)),#TfidfVectorizer(stop_words='english', vocabulary=self.vocabulary)),
             # ('rd', IncrementalPCA()),
             #('clf', svm.SVC(kernel='linear'))
             ('clf', svm.LinearSVC())
@@ -204,17 +212,7 @@ class ModelsGenerator:
         print(f'[{c}]-Settaggio pipeline completato')
         c = c + 1
         print(f'[{c}]-Settaggio parametri per GridSearchCV in corso...')
-        # [CV 1/2] END clf__C=1, clf__gamma=auto, rd__algorithm=randomized, rd__n_components=2, rd__random_state=24, vect__dtype=<class 'numpy.float32'>, vect__max_df=0.75, vect__max_features=4273815, vect__ngram_range=(2, 3);, score=0.650 total time=  40.9s
         parameters = {
-            # 'vect__max_df': [0.75],
-            # 'vect__min_df': [0.01, 0.001],
-            # 'vect__max_features': [4000, 5000],
-            'vect__ngram_range': [(1, 3)],
-
-            'vect__dtype': [np.float32],
-            'vect__sublinear_tf': [True],
-            'vect__use_idf': [True],
-            'vect__smooth_idf': [True],
             # 'rd__n_components': [10, 20],
             # 'rd__whiten': [True],
             # 'rd__batch_size': [20, 30],
@@ -223,30 +221,22 @@ class ModelsGenerator:
             # 'rd__power_iteration_normalizer': ['auto', 'LU', 'none'],
             # 'rd__n_oversamples': [10],
             # 'rd__n_iter': [15],
-            #'clf__cache_size': [5, 10, 20, 50, 200],
-            #'clf__max_iter': [-1],
-            #'clf__tol': [0.06099999999999999],
-            #'clf__gamma': ['auto'],
+            'clf__max_iter': [7500],
             'clf__penalty': ['l2'],
             'clf__loss': ['squared_hinge'],
-            'clf__dual': [True],
-            'clf__fit_intercept': [True],
-            'clf__intercept_scaling': [44],
+            'clf__dual': [True, False],
+            'clf__fit_intercept': [False, True],
+            'clf__intercept_scaling': [1.0, 0.1],
             'clf__class_weight': ['balanced'],
-            'clf__tol': [0.009000000000000001],
-            'clf__C': [0.08],
-            'vect__min_df': np.arange(0, 1000, 10),
-            'clf__max_iter': [100000]
+            'clf__tol':  [0.001, 1.0],
+            'clf__C': [0.2, 0.02],
+            'vect__min_df': [290],
+            'vect__use_idf': [True],
+            'vect__smooth_idf': [True],
+            'vect__sublinear_tf': [True],
+            'vect__ngram_range': [(1, 5)]
         }
-        #best_score: 0.8547858321693954
-        #best_params: {'clf__C': 0.2, 'clf__gamma': 'auto', 'vect__dtype': <class 'numpy.float32'>, 'vect__ngram_range': (1, 3)}
-        #best_score: 0.862196656190612
-        #best_params: {'clf__C': 0.2, 'clf__cache_size': 50, 'clf__gamma': 'auto', 'clf__max_iter': -1,
-        # 'clf__tol': 0.06099999999999999, 'vect__dtype': <class 'numpy.float32'>, 'vect__ngram_range': (1, 3), \
-        #'vect__smooth_idf': True
-        #, 'vect__sublinear_tf': True, 'vect__use_idf': True}
-        #Tempo di esecuzione: 11770.685233831406
-        #sec
+
         c = c + 1
         print(f'[{c}]-Settaggio parametri per GridSearchCV completato')
         grid = GridSearchCV(pipeline, parameters, verbose=3, cv=3, n_jobs=-1)
