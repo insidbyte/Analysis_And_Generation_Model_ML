@@ -4,6 +4,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.linear_model import LogisticRegression
 import numpy as np
 from sklearn import svm
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, precision_score, recall_score
@@ -44,9 +45,9 @@ class ModelsGenerator:
             print('Dataset bilanciato !')
         if option == 1:
             self.array_df = self.df_to_array()
-            self.vectorizer = TfidfVectorizer(stop_words='english', ngram_range=(1, 5), min_df=290,
+            self.vectorizer = TfidfVectorizer(ngram_range=(1, 4), min_df=200, max_df=40000,#45000
                                               vocabulary=self.vocabulary, use_idf=True, smooth_idf=True,
-                                              sublinear_tf=True)
+                                              sublinear_tf=True, analyzer='word')
 
 
             # self.decompositor = IncrementalPCA(n_components=20, whiten=True, batch_size=20)
@@ -59,11 +60,15 @@ class ModelsGenerator:
             self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.data_trans, self.y,
                                                                                     test_size=0.2,
                                                                                     random_state=24)
-
+            """
             self.model = svm.LinearSVC(C=0.2, class_weight='balanced', dual=True, fit_intercept=True,
                                        intercept_scaling=0.1, loss='squared_hinge', max_iter=75000, penalty='l2',
                                        tol=0.001)
             self.model = CalibratedClassifierCV(self.model)
+            """
+            self.model = LogisticRegression(penalty='l2', dual=True, fit_intercept=True, C=13.9, max_iter=7500,
+                                            class_weight="balanced", solver='liblinear',
+                                            intercept_scaling=8, tol=0.00001)
 
         elif option == 2:
             self.array_df = self.df_to_array()
@@ -178,15 +183,32 @@ class ModelsGenerator:
         c = 0
         print(f'[{c}]-Settaggio pipeline in corso...')
         pipeline = Pipeline([
-            ('vect', TfidfVectorizer(stop_words='english', vocabulary=self.vocabulary)),#TfidfVectorizer(stop_words='english', vocabulary=self.vocabulary)),
+            ('vect', TfidfVectorizer(vocabulary=self.vocabulary)),#TfidfVectorizer(stop_words='english', vocabulary=self.vocabulary)),
             # ('rd', IncrementalPCA()),
             #('clf', svm.SVC(kernel='linear'))
-            ('clf', svm.LinearSVC())
+            #('clf', svm.LinearSVC()),
+            ('clf', LogisticRegression(solver='liblinear'))
         ])
         c = c + 1
         print(f'[{c}]-Settaggio pipeline completato')
         c = c + 1
         print(f'[{c}]-Settaggio parametri per GridSearchCV in corso...')
+        """
+        best for logistic
+            'clf__penalty': ['l2'],
+            'clf__dual': [True],
+            'clf__fit_intercept': [True],
+            'clf__class_weight': ['balanced'],
+            'clf__C': [13.9],#np.arange(start=13.0, stop=15.1, step=0.1, dtype=float),
+            
+            best_score: 0.8959227421876367
+            best_params: {'clf__C': 13.9, 'clf__class_weight': 'balanced', 'clf__dual': True, 
+            'clf__fit_intercept': True, 'clf__penalty': 'l2', 'vect__analyzer': 'word', 'vect__max_df': 45000, 
+            'vect__min_df': 290, 'vect__ngram_range': (1, 5), 'vect__smooth_idf': True, 'vect__sublinear_tf': True, 
+            'vect__use_idf': True, 'clf__warm_start': True}
+        896712
+        8970
+        """
         parameters = {
             # 'rd__n_components': [10, 20],
             # 'rd__whiten': [True],
@@ -198,18 +220,28 @@ class ModelsGenerator:
             # 'rd__n_iter': [15],
             'clf__max_iter': [7500],
             'clf__penalty': ['l2'],
-            'clf__loss': ['squared_hinge'],
-            'clf__dual': [True, ],
-            'clf__fit_intercept': [ True],
-            'clf__intercept_scaling': [ 0.1],
+            #'clf__loss': ['squared_hinge'],
+            'clf__dual': [True],
+            'clf__fit_intercept': [True],
+            'clf__intercept_scaling': [8],
             'clf__class_weight': ['balanced'],
-            'clf__tol':  [0.001],
-            'clf__C': [0.2],
-            'vect__min_df': [290],
+            'clf__tol':  [0.00001],#np.arange(start=0.00001,stop=0.00011,step=0.00001,dtype=float),#[0.0001],
+            'clf__C': [13.9],#np.arange(start=0.1, stop=1.1, step=0.1, dtype=float),
+            'clf__warm_start': [True],
+            #'clf__l1_ratio': [1],
+            #'clf__verbose': [1],
+            #'clf__random_state':[0, 24, 32, 42],
+            'vect__min_df': np.arange(start=1,stop=100,step=10,dtype=int),
+            'vect__max_df': [40000],#np.arange(start=40000, stop=46000, step=1000, dtype=int),
+            'vect__analyzer': ['word'],
             'vect__use_idf': [True],
+            #'vect__token_pattern': [r"(?u)\b\w\w+\b"],
+            #'vect__stop_words': [None],
             'vect__smooth_idf': [True],
             'vect__sublinear_tf': [True],
-            'vect__ngram_range': [(1, 5)]
+            #'vect__binary': [False],
+            'vect__ngram_range': [(1, 4)],
+            #'vect__norm': ['l2']
         }
 
         c = c + 1
